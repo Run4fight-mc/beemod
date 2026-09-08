@@ -1,0 +1,14 @@
+{
+	"required": true,
+	"package": "com.run4fight.mixin",
+	"compatibilityLevel": "JAVA_25",
+	"mixins": [
+      "BeeModMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
+	}
+}

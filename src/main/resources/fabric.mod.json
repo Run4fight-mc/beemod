@@ -1,0 +1,38 @@
+{
+	"schemaVersion": 1,
+	"id": "beemod",
+	"version": "${version}",
+	"name": "BeeMod",
+	"description": "A mod for beesim minecraft server",
+	"authors": [
+		"Run4fight"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/modid/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.run4fight.BeeMod"
+		],
+		"client": [
+			"com.run4fight.client.BeeModClient"
+		]
+	},
+	"mixins": [
+		"BeeMod.mixins.json",
+		{
+			"config": "BeeMod.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.19.5",
+		"minecraft": "1.21.11",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}
