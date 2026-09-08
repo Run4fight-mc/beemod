@@ -3,7 +3,8 @@
 	"package": "com.run4fight.client.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
-		"BeeModClientMixin"
+		"BeeModClientMixin",
+		"InGameHudAccessor"
 	],
 	"injectors": {
 		"defaultRequire": 1
