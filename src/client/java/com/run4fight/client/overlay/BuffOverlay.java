@@ -51,9 +51,18 @@ public class BuffOverlay {
 
             context.drawText(
                     client.textRenderer,
-                    Text.literal(icon+"\uE00D\uE00E"+stacks),
+                    Text.literal(icon),
                     x,
                     y,
+                    0xFFFFFFFF,
+                    false
+            );
+
+            context.drawText(
+                    client.textRenderer,
+                    Text.literal("x"+stacks),
+                    x,
+                    y+11,
                     0xFFFFFFFF,
                     true
             );
@@ -86,7 +95,6 @@ public class BuffOverlay {
             tooltip.add(
                     Text.literal(
                             hoveredBuff.getName()
-                                    + " x" + hoveredBuff.getStacks()
                                     + " (" + hoveredBuff.getDuration() + ")"
                     )
             );
