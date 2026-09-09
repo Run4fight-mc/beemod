@@ -34,6 +34,7 @@ public enum BuffIcons {
     PEPPER_ICON("pepper field", '\uE113'),
     PINEAPPLE_ICON("pineapple field", '\uE10C'),
     PINE_ICON("pine field", '\uE110'),
+    PUMPKIN_ICON("pumpkin field", '\uE10E'),
     PURPLEFLOWER("purple pollen", '\uE026'),
     PURPLEPOTION("purple potion", '\uE100'),
     REDEXTRACT("red extract", '\uE014'),
