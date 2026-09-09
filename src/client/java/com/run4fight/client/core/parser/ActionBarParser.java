@@ -15,15 +15,16 @@ public class ActionBarParser {
     public static List<BuffModel> getBuffs(String rawBuffs) {
         String decodedBuffs = decode(rawBuffs);
         String buffIconClass = fetchAllBuffIcons();
-
         Pattern buffPattern = Pattern.compile(
                 "(" + buffIconClass + ")(.*?)" +
                         "(?=" + buffIconClass + "|$)"
         );
 
         Pattern headerPattern = Pattern.compile(
-                "^-?(?<duration>\\d{2}:\\d{2})\\s*_\\s*x(?<stacks>\\d+(?:\\.\\d+)?)"
+                "^-?(?<duration>\\d{2}:\\d{2})" +
+                        "(?:\\s*_\\s*x\\s*(?<stacks>\\d+(?:\\s*\\.\\s*\\d+)?))?"
         );
+
 
         Pattern effectPattern = Pattern.compile(
                 "(?<value>[+x]\\s*" +
@@ -43,6 +44,7 @@ public class ActionBarParser {
         Matcher matcher = buffPattern.matcher(decodedBuffs);
 
         while (matcher.find()) {
+            System.out.println("=== Buff détecté ===");
             char icon = matcher.group(1).charAt(0);
             String description = matcher.group(2).trim();
 
@@ -54,7 +56,11 @@ public class ActionBarParser {
 
             String name = BUFF_ICON_MAP.get(icon);
             String duration = headerMatcher.group("duration");
-            double stacks = Double.parseDouble(headerMatcher.group("stacks"));
+
+            String stacksStr = headerMatcher.group("stacks");
+            double stacks = stacksStr != null
+                    ? Double.parseDouble(stacksStr.replaceAll("\\s+", ""))
+                    : 1.0;
 
             List<EffectModel> effects = new ArrayList<>();
 
@@ -76,7 +82,6 @@ public class ActionBarParser {
                         value,
                         effectName
                 );
-
                 effects.add(effect);
             }
 

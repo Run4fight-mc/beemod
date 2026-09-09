@@ -49,7 +49,7 @@ public enum BuffIcons {
     STUMP_ICON("stump field", '\uE10D'),
     SUNFLOWER_ICON("sunflower field", '\uE105'),
     SUNFLOWER_ICON2("sunflower field", '\uE116'),
-    SWORD("sword", '\uE021'),
+    WRATH("wrath", '\uE021'),
     TOXICZONE("toxic zone", '\uE029'),
     TOTEM("totem", '\uE019'),
     UPDATEORB("update orb", '\uE101'),

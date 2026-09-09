@@ -11,7 +11,7 @@ import java.util.List;
 
 
 public class ActionBarHandler {
-
+    private static Text rawActionBarData;
     private final BuffManager buffManager;
 
     public ActionBarHandler(BuffManager buffManager) {
@@ -19,19 +19,22 @@ public class ActionBarHandler {
     }
 
     public void onTick(MinecraftClient client) {
-
         InGameHud hud = client.inGameHud;
-        Text actionBarText = ((InGameHudAccessor) hud).getOverlayMessage();
+        rawActionBarData = ((InGameHudAccessor) hud).getOverlayMessage();
 
-        if (actionBarText == null) {
+        if (rawActionBarData == null) {
             return;
         }
 
-        String actionBarRaw = actionBarText.getString();
+        String actionBarRaw = rawActionBarData.getString();
 
         List<BuffModel> buffs = ActionBarParser.getBuffs(actionBarRaw);
 
         buffManager.update(buffs);
+    }
+
+    public Text getRawActionBarData(){
+        return rawActionBarData;
     }
 }
 
