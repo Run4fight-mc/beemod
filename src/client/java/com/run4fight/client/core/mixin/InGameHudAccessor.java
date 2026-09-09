@@ -1,4 +1,4 @@
-package com.run4fight.client.mixin;
+package com.run4fight.client.core.mixin;
 
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.text.Text;

@@ -1,4 +1,4 @@
-package com.run4fight.client.font;
+package com.run4fight.client.core.font;
 
 public enum SymbolIcons {
     COLON_10(":", '\uE085'),

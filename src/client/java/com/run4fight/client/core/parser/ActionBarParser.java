@@ -1,6 +1,5 @@
-package com.run4fight.client.parser;
-
-import com.run4fight.client.font.*;
+package com.run4fight.client.core.parser;
+import com.run4fight.client.core.font.BuffIcons;
 import com.run4fight.client.model.BuffModel;
 import com.run4fight.client.model.EffectModel;
 
@@ -9,8 +8,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.run4fight.client.font.BuffIcons.BUFF_ICON_MAP;
-import static com.run4fight.client.font.fontDecoder.decode;
+import static com.run4fight.client.core.font.BuffIcons.BUFF_ICON_MAP;
+import static com.run4fight.client.core.font.fontDecoder.decode;
 
 public class ActionBarParser {
     public static List<BuffModel> getBuffs(String rawBuffs) {

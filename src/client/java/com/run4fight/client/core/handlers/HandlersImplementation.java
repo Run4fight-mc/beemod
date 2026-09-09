@@ -1,4 +1,4 @@
-package com.run4fight.client.handlers;
+package com.run4fight.client.core.handlers;
 
 import com.run4fight.client.overlay.BuffOverlay;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;

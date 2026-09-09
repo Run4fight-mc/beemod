@@ -1,4 +1,4 @@
-package com.run4fight.client.font;
+package com.run4fight.client.core.font;
 
 public enum TextIcons {
     A_14("a", '\uE086'),

@@ -1,6 +1,6 @@
 package com.run4fight.client.overlay;
 
-import com.run4fight.client.managers.BuffManager;
+import com.run4fight.client.core.managers.BuffManager;
 import com.run4fight.client.model.BuffModel;
 import com.run4fight.client.model.EffectModel;
 import net.minecraft.client.MinecraftClient;
@@ -47,14 +47,15 @@ public class BuffOverlay {
         for (BuffModel buff : buffs) {
 
             String icon = String.valueOf(buff.getIcon());
+            String stacks = String.valueOf(buff.getStacks());
 
             context.drawText(
                     client.textRenderer,
-                    Text.literal(icon),
+                    Text.literal(icon+"\uE00D\uE00E"+stacks),
                     x,
                     y,
                     0xFFFFFFFF,
-                    false
+                    true
             );
 
             // Mouse position in GUI coordinates

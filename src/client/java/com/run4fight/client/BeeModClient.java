@@ -1,8 +1,8 @@
 package com.run4fight.client;
 
-import com.run4fight.client.handlers.ActionBarHandler;
-import com.run4fight.client.handlers.HandlersImplementation;
-import com.run4fight.client.managers.BuffManager;
+import com.run4fight.client.core.handlers.ActionBarHandler;
+import com.run4fight.client.core.handlers.HandlersImplementation;
+import com.run4fight.client.core.managers.BuffManager;
 import com.run4fight.client.overlay.BuffOverlay;
 import net.fabricmc.api.ClientModInitializer;
 

@@ -1,4 +1,4 @@
-package com.run4fight.client.font;
+package com.run4fight.client.core.font;
 
 import java.util.HashMap;
 import java.util.Map;

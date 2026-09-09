@@ -1,4 +1,4 @@
-package com.run4fight.client.managers;
+package com.run4fight.client.core.managers;
 
 import com.run4fight.client.model.BuffModel;
 
