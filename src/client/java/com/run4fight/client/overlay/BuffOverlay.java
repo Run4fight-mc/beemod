@@ -43,12 +43,15 @@ public class BuffOverlay {
 
         BuffModel hoveredBuff = null;
 
-        // Render icons + detect hover
         for (BuffModel buff : buffs) {
 
             String icon = String.valueOf(buff.getIcon());
             String stacks = String.valueOf(buff.getStacks());
+            if (stacks.endsWith(".0")){
+                stacks = stacks.substring(0, stacks.length()-2);
+            }
 
+            //Buff icon
             context.drawText(
                     client.textRenderer,
                     Text.literal(icon),
@@ -58,16 +61,36 @@ public class BuffOverlay {
                     false
             );
 
+            // Buff stacks
+            String stackText = "x" + stacks;
+
+            float scale;
+            switch (stackText.length()) {
+                case 2 -> scale = 0.9f; // x1
+                case 3 -> scale = 0.875f; //x10
+                case 4 -> scale = 0.825f;
+                case 5 -> scale = 0.675f; //x1.02
+                default -> scale = 0.55f;
+            }
+
+            context.getMatrices().pushMatrix();
+            context.getMatrices().scale(scale, scale);
+
+            //System.out.println(stackText);
+
             context.drawText(
                     client.textRenderer,
-                    Text.literal("x"+stacks),
-                    x,
-                    y+11,
+                    Text.literal(stackText),
+                    (int) (x / scale),
+                    (int) ((y + 13) / scale),
                     0xFFFFFFFF,
                     true
             );
 
-            // Mouse position in GUI coordinates
+            context.getMatrices().popMatrix();
+
+
+            // Hovering detection
             double mouseX = client.mouse.getX()
                     * client.getWindow().getScaledWidth()
                     / client.getWindow().getWidth();
