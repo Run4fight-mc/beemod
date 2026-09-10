@@ -9,10 +9,11 @@ import net.fabricmc.api.ClientModInitializer;
 import com.run4fight.client.config.BeeModConfig;
 
 public class BeeModClient implements ClientModInitializer {
+	private static BuffManager buffManager;
 
 	@Override
 	public void onInitializeClient() {
-		BuffManager buffManager = new BuffManager();
+		buffManager = new BuffManager();
 
 		ActionBarHandler actionBarHandler =
 				new ActionBarHandler(buffManager);
@@ -28,5 +29,9 @@ public class BeeModClient implements ClientModInitializer {
 		commandHandler.register();
 
 		BeeModConfig.load();
+	}
+
+	public static BuffManager getBuffManager() {
+		return buffManager;
 	}
 }

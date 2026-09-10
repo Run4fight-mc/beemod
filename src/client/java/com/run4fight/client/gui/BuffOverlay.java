@@ -30,10 +30,6 @@ public class BuffOverlay {
 
     public void render(DrawContext context, RenderTickCounter tickCounter) {
 
-        if (!BeeModConfig.get().isShowOverlay()) {
-            return;
-        }
-
         MinecraftClient client = MinecraftClient.getInstance();
 
         if (client.player == null) {
