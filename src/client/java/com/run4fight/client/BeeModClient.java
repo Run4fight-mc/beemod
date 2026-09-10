@@ -4,10 +4,9 @@ import com.run4fight.client.core.handlers.ActionBarHandler;
 import com.run4fight.client.core.handlers.CommandHandler;
 import com.run4fight.client.core.handlers.HandlersImplementation;
 import com.run4fight.client.core.managers.BuffManager;
-import com.run4fight.client.overlay.BuffOverlay;
+import com.run4fight.client.gui.BuffOverlay;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import com.run4fight.client.config.BeeModConfig;
 
 public class BeeModClient implements ClientModInitializer {
 
@@ -27,5 +26,7 @@ public class BeeModClient implements ClientModInitializer {
 		CommandHandler commandHandler =
 				new CommandHandler(actionBarHandler);
 		commandHandler.register();
+
+		BeeModConfig.load();
 	}
 }

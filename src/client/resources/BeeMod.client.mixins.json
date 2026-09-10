@@ -4,7 +4,8 @@
 	"compatibilityLevel": "JAVA_21",
 	"client": [
       "BeeModClientMixin",
-      "InGameHudAccessor"
+      "InGameHudAccessor",
+	  "InGameHudMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

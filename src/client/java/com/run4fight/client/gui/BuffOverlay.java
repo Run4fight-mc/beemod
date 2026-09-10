@@ -1,4 +1,4 @@
-package com.run4fight.client.overlay;
+package com.run4fight.client.gui;
 
 import com.run4fight.client.core.managers.BuffManager;
 import com.run4fight.client.model.BuffModel;
@@ -8,6 +8,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import com.run4fight.client.config.BeeModConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,10 @@ public class BuffOverlay {
     }
 
     public void render(DrawContext context, RenderTickCounter tickCounter) {
+
+        if (!BeeModConfig.get().isShowOverlay()) {
+            return;
+        }
 
         MinecraftClient client = MinecraftClient.getInstance();
 

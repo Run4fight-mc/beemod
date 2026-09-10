@@ -1,8 +1,10 @@
 package com.run4fight.client.core.handlers;
 
 import com.mojang.brigadier.context.CommandContext;
+import com.run4fight.client.gui.ConfigOverlay;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
@@ -24,6 +26,10 @@ public class CommandHandler {
                                     literal("buff")
                                             .executes(this::executeBuff)
                             )
+                            .then(
+                                    literal("config")
+                                            .executes(this::openModConfig)
+                            )
             );
 
         });
@@ -42,6 +48,18 @@ public class CommandHandler {
         }
 
         context.getSource().sendFeedback(actionBar);
+
+        return 1;
+    }
+
+    private int openModConfig(
+            CommandContext<FabricClientCommandSource> context
+    ) {
+        MinecraftClient client = MinecraftClient.getInstance();
+
+        client.execute(() -> {
+            client.setScreen(new ConfigOverlay());
+        });
 
         return 1;
     }

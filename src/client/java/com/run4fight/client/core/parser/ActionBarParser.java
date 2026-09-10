@@ -44,7 +44,6 @@ public class ActionBarParser {
         Matcher matcher = buffPattern.matcher(decodedBuffs);
 
         while (matcher.find()) {
-            System.out.println("=== Buff détecté ===");
             char icon = matcher.group(1).charAt(0);
             String description = matcher.group(2).trim();
 
