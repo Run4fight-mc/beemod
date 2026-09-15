@@ -26,6 +26,14 @@ public class BeeModConfig {
     private boolean showActionbar = true;
     private boolean showCooldown = true;
 
+    // Buff overlay
+    private int buffOverlayX = 10;
+    private int buffOverlayY = 10;
+
+    // Clock cooldown overlay
+    private int wealthClockOverlayX = 10;
+    private int wealthClockOverlayY = 3;
+
     public boolean isShowActionbar() {
         return showActionbar;
     }
@@ -88,5 +96,38 @@ public class BeeModConfig {
             System.err.println("Failed to save BeeMod config:");
             e.printStackTrace();
         }
+    }
+
+
+    public int getBuffOverlayX() {
+        return buffOverlayX;
+    }
+
+    public void setBuffOverlayX(int buffOverlayX) {
+        this.buffOverlayX = buffOverlayX;
+    }
+
+    public int getBuffOverlayY() {
+        return buffOverlayY;
+    }
+
+    public void setBuffOverlayY(int buffOverlayY) {
+        this.buffOverlayY = buffOverlayY;
+    }
+
+    public int getWealthClockOverlayX() {
+        return wealthClockOverlayX;
+    }
+
+    public int getWealthClockOverlayY() {
+        return wealthClockOverlayY;
+    }
+
+    public void setWealthClockOverlayX(int x) {
+        this.wealthClockOverlayX = x;
+    }
+
+    public void setWealthClockOverlayY(int y) {
+        this.wealthClockOverlayY = y;
     }
 }

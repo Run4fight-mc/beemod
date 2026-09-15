@@ -1,5 +1,6 @@
 package com.run4fight.client.gui;
 
+import com.run4fight.client.config.BeeModConfig;
 import com.run4fight.client.core.handlers.HudOverlay;
 import com.run4fight.client.core.managers.BuffManager;
 import com.run4fight.client.model.BuffModel;
@@ -15,46 +16,74 @@ import java.util.List;
 
 public class BuffOverlay implements HudOverlay {
 
-    public static final Identifier ID = Identifier.of("beemod", "buff_overlay");
+    public static final Identifier ID =
+            Identifier.of("beemod", "buff_overlay");
+
     private final BuffManager buffManager;
 
     private static final int ICON_SIZE = 24;
-    private static final int START_X = 10;
-    private static final int START_Y = 10;
 
     public BuffOverlay(BuffManager buffManager) {
         this.buffManager = buffManager;
     }
 
     @Override
-    public Identifier getId() {return ID;}
+    public Identifier getId() {
+        return ID;
+    }
 
     @Override
-    public void render(DrawContext context, RenderTickCounter tickCounter) {
-
-        MinecraftClient client = MinecraftClient.getInstance();
+    public void render(
+            DrawContext context,
+            RenderTickCounter tickCounter
+    ) {
+        MinecraftClient client =
+                MinecraftClient.getInstance();
 
         if (client.player == null) {
             return;
         }
 
+        BeeModConfig config = BeeModConfig.get();
+
+        if (!config.isShowOverlay()) {
+            return;
+        }
+
+        renderBuffs(
+                context,
+                config.getBuffOverlayX(),
+                config.getBuffOverlayY()
+        );
+    }
+
+    public void renderBuffs(
+            DrawContext context,
+            int startX,
+            int startY
+    ) {
+        MinecraftClient client =
+                MinecraftClient.getInstance();
+
         List<BuffModel> buffs = buffManager.getBuffs();
 
-        int x = 10;
-        int y = 10;
-        int iconSize = 24;
-
-        BuffModel hoveredBuff = null;
+        int x = startX;
+        int y = startY;
 
         for (BuffModel buff : buffs) {
 
             String icon = String.valueOf(buff.getIcon());
+
             String stacks = String.valueOf(buff.getStacks());
-            if (stacks.endsWith(".0")){
-                stacks = stacks.substring(0, stacks.length()-2);
+
+            if (stacks.endsWith(".0")) {
+                stacks = stacks.substring(
+                        0,
+                        stacks.length() - 2
+                );
             }
 
-            //Buff icon
+            // Buff icon
             context.drawText(
                     client.textRenderer,
                     Text.literal(icon),
@@ -68,18 +97,21 @@ public class BuffOverlay implements HudOverlay {
             String stackText = "x" + stacks;
 
             float scale;
+
             switch (stackText.length()) {
-                case 2 -> scale = 0.9f; // x1
-                case 3 -> scale = 0.875f; //x10
+                case 2 -> scale = 0.9f;
+                case 3 -> scale = 0.875f;
                 case 4 -> scale = 0.825f;
-                case 5 -> scale = 0.675f; //x1.02
+                case 5 -> scale = 0.675f;
                 default -> scale = 0.55f;
             }
 
             context.getMatrices().pushMatrix();
-            context.getMatrices().scale(scale, scale);
 
-            //System.out.println(stackText);
+            context.getMatrices().scale(
+                    scale,
+                    scale
+            );
 
             context.drawText(
                     client.textRenderer,
@@ -92,65 +124,7 @@ public class BuffOverlay implements HudOverlay {
 
             context.getMatrices().popMatrix();
 
-
-            // Hovering detection
-            double mouseX = client.mouse.getX()
-                    * client.getWindow().getScaledWidth()
-                    / client.getWindow().getWidth();
-
-            double mouseY = client.mouse.getY()
-                    * client.getWindow().getScaledHeight()
-                    / client.getWindow().getHeight();
-
-            if (mouseX >= x &&
-                    mouseX < x + iconSize &&
-                    mouseY >= y &&
-                    mouseY < y + iconSize) {
-
-                hoveredBuff = buff;
-            }
-
-            x += iconSize;
-        }
-
-        // Render tooltip
-        if (hoveredBuff != null) {
-
-            List<Text> tooltip = new ArrayList<>();
-
-            tooltip.add(
-                    Text.literal(
-                            hoveredBuff.getName()
-                                    + " (" + hoveredBuff.getDuration() + ")"
-                    )
-            );
-
-            for (EffectModel effect : hoveredBuff.getEffects()) {
-
-                tooltip.add(
-                        Text.literal(
-                                "- " +
-                                        effect.getValue() +
-                                        " " +
-                                        effect.getEffectName()
-                        )
-                );
-            }
-
-            double mouseX = client.mouse.getX()
-                    * client.getWindow().getScaledWidth()
-                    / client.getWindow().getWidth();
-
-            double mouseY = client.mouse.getY()
-                    * client.getWindow().getScaledHeight()
-                    / client.getWindow().getHeight();
-
-            context.drawTooltip(
-                    client.textRenderer,
-                    tooltip,
-                    (int) mouseX,
-                    (int) mouseY
-            );
+            x += ICON_SIZE;
         }
     }
 }

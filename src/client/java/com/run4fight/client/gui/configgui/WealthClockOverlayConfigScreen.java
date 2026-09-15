@@ -1,10 +1,16 @@
 package com.run4fight.client.gui.configgui;
 
+import com.run4fight.client.BeeModClient;
+import com.run4fight.client.core.handlers.TriggerHandler;
+import com.run4fight.client.model.CooldownModel;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
 import com.run4fight.client.config.BeeModConfig;
+
+import java.util.List;
 
 public class WealthClockOverlayConfigScreen extends Screen {
 
@@ -14,6 +20,8 @@ public class WealthClockOverlayConfigScreen extends Screen {
     private final Screen parent;
 
     private ButtonWidget showCooldownButton;
+
+    private boolean draggingOverlay = false;
 
     public WealthClockOverlayConfigScreen(Screen parent) {
         super(Text.literal("Wealth Clock Overlay"));
@@ -72,6 +80,8 @@ public class WealthClockOverlayConfigScreen extends Screen {
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         context.fill(0, 0, this.width, this.height, 0xCC000000);
 
+        BeeModConfig config = BeeModConfig.get();
+
         int left = (this.width - PANEL_WIDTH) / 2;
         int top = (this.height - PANEL_HEIGHT) / 2;
         int right = left + PANEL_WIDTH;
@@ -104,7 +114,162 @@ public class WealthClockOverlayConfigScreen extends Screen {
                 0xFFFFFFFF
         );
 
+        TriggerHandler triggerHandler = BeeModClient.getTriggerHandler();
+
+        List<CooldownModel> cooldowns =
+                triggerHandler.getRegistry().getActiveCooldowns();
+
+        int previewX = config.getWealthClockOverlayX();
+        int previewY = config.getWealthClockOverlayY();
+
+        int y = previewY;
+
+        for (CooldownModel cd : cooldowns) {
+
+            long remaining = cd.getRemainingMs();
+
+            int h = (int) (remaining / 3_600_000L);
+            int m = (int) ((remaining % 3_600_000L) / 60_000L);
+            int s = (int) ((remaining % 60_000L) / 1000L);
+
+            context.drawTextWithShadow(
+                    this.textRenderer,
+                    String.format("⏳ %02d:%02d:%02d", h, m, s),
+                    previewX,
+                    y,
+                    0xFFFF5555
+            );
+
+            y += 5;
+        }
+
         super.render(context, mouseX, mouseY, delta);
+    }
+
+    private int getOverlayWidth() {
+        TriggerHandler triggerHandler = BeeModClient.getTriggerHandler();
+
+        List<CooldownModel> cooldowns =
+                triggerHandler.getRegistry().getActiveCooldowns();
+
+        int maxWidth = 0;
+
+        for (CooldownModel cd : cooldowns) {
+            long remaining = cd.getRemainingMs();
+
+            int h = (int) (remaining / 3_600_000L);
+            int m = (int) ((remaining % 3_600_000L) / 60_000L);
+            int s = (int) ((remaining % 60_000L) / 1000L);
+
+            String text = String.format(
+                    "⏳ %02d:%02d:%02d",
+                    h,
+                    m,
+                    s
+            );
+
+            maxWidth = Math.max(
+                    maxWidth,
+                    this.textRenderer.getWidth(text)
+            );
+        }
+
+        return maxWidth;
+    }
+
+    private int getOverlayHeight() {
+        TriggerHandler triggerHandler = BeeModClient.getTriggerHandler();
+
+        List<CooldownModel> cooldowns =
+                triggerHandler.getRegistry().getActiveCooldowns();
+
+        return Math.max(5, cooldowns.size() * 5);
+    }
+
+    @Override
+    public boolean mouseClicked(Click click, boolean doubled) {
+
+        if (click.button() == 0) {
+
+            BeeModConfig config = BeeModConfig.get();
+
+            int overlayX = config.getWealthClockOverlayX();
+            int overlayY = config.getWealthClockOverlayY();
+
+            int overlayWidth = getOverlayWidth();
+            int overlayHeight = getOverlayHeight();
+
+            double mouseX = click.x();
+            double mouseY = click.y();
+
+            if (mouseX >= overlayX
+                    && mouseX <= overlayX + overlayWidth
+                    && mouseY >= overlayY
+                    && mouseY <= overlayY + overlayHeight) {
+
+                draggingOverlay = true;
+
+                return true;
+            }
+        }
+
+        return super.mouseClicked(click, doubled);
+    }
+
+    @Override
+    public boolean mouseDragged(
+            Click click,
+            double offsetX,
+            double offsetY
+    ) {
+        if (draggingOverlay && click.button() == 0) {
+
+            BeeModConfig config = BeeModConfig.get();
+
+            int newX = config.getWealthClockOverlayX()
+                    + (int) offsetX;
+
+            int newY = config.getWealthClockOverlayY()
+                    + (int) offsetY;
+
+            newX = Math.max(
+                    0,
+                    Math.min(
+                            newX,
+                            this.width - getOverlayWidth()
+                    )
+            );
+
+            newY = Math.max(
+                    0,
+                    Math.min(
+                            newY,
+                            this.height - getOverlayHeight()
+                    )
+            );
+
+            config.setWealthClockOverlayX(newX);
+            config.setWealthClockOverlayY(newY);
+
+            return true;
+        }
+
+        return super.mouseDragged(click, offsetX, offsetY);
+    }
+
+    @Override
+    public boolean mouseReleased(Click click) {
+
+        if (click.button() == 0 && draggingOverlay) {
+
+            draggingOverlay = false;
+
+            BeeModConfig.save();
+
+            return true;
+        }
+
+        return super.mouseReleased(click);
     }
 
     @Override

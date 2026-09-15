@@ -1,10 +1,17 @@
 package com.run4fight.client.gui.configgui;
 
+import com.run4fight.client.BeeModClient;
+import com.run4fight.client.core.managers.BuffManager;
+import com.run4fight.client.gui.BuffOverlay;
+import com.run4fight.client.model.BuffModel;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
 import com.run4fight.client.config.BeeModConfig;
+
+import java.util.List;
 
 public class BuffOverlayConfigScreen extends Screen {
 
@@ -19,9 +26,20 @@ public class BuffOverlayConfigScreen extends Screen {
     private ButtonWidget showOverlayButton;
     private ButtonWidget showActionbarButton;
 
-    public BuffOverlayConfigScreen(Screen parent) {
+    private boolean draggingOverlay = false;
+
+    private static final int PREVIEW_WIDTH = 120;
+    private static final int PREVIEW_HEIGHT = 30;
+
+    private final BuffOverlay buffOverlay;
+
+    public BuffOverlayConfigScreen(
+            Screen parent,
+            BuffOverlay buffOverlay
+    ) {
         super(Text.literal("Buff Overlay"));
         this.parent = parent;
+        this.buffOverlay = buffOverlay;
     }
 
     @Override
@@ -174,7 +192,147 @@ public class BuffOverlayConfigScreen extends Screen {
                 0xFFFFFFFF
         );
 
+        BeeModConfig config = BeeModConfig.get();
+
+        BuffManager buffManager = BeeModClient.getBuffManager();
+        List<BuffModel> buffs = buffManager.getBuffs();
+
+        int previewX = config.getBuffOverlayX();
+        int previewY = config.getBuffOverlayY();
+
+        int x = previewX;
+        int y = previewY;
+
+        for (BuffModel buff : buffs) {
+
+            String icon = String.valueOf(buff.getIcon());
+
+            String stacks = String.valueOf(buff.getStacks());
+
+            if (stacks.endsWith(".0")) {
+                stacks = stacks.substring(0, stacks.length() - 2);
+            }
+
+            // Same icon as the real overlay
+            context.drawText(
+                    this.textRenderer,
+                    Text.literal(icon),
+                    x,
+                    y,
+                    0xFFFFFFFF,
+                    false
+            );
+
+            String stackText = "x" + stacks;
+
+            float scale;
+
+            switch (stackText.length()) {
+                case 2 -> scale = 0.9f;
+                case 3 -> scale = 0.875f;
+                case 4 -> scale = 0.825f;
+                case 5 -> scale = 0.675f;
+                default -> scale = 0.55f;
+            }
+
+            context.getMatrices().pushMatrix();
+            context.getMatrices().scale(scale, scale);
+
+            context.drawText(
+                    this.textRenderer,
+                    Text.literal(stackText),
+                    (int) (x / scale),
+                    (int) ((y + 13) / scale),
+                    0xFFFFFFFF,
+                    true
+            );
+
+            context.getMatrices().popMatrix();
+
+            x += 24;
+        }
+
         super.render(context, mouseX, mouseY, delta);
+    }
+
+    @Override
+    public boolean mouseClicked(Click click, boolean doubled) {
+
+        if (click.button() == 0) { // Left mouse button
+
+            BeeModConfig config = BeeModConfig.get();
+
+            int overlayX = config.getBuffOverlayX();
+            int overlayY = config.getBuffOverlayY();
+
+            double mouseX = click.x();
+            double mouseY = click.y();
+
+            if (mouseX >= overlayX
+                    && mouseX <= overlayX + PREVIEW_WIDTH
+                    && mouseY >= overlayY
+                    && mouseY <= overlayY + PREVIEW_HEIGHT) {
+
+                draggingOverlay = true;
+
+                return true;
+            }
+        }
+
+        return super.mouseClicked(click, doubled);
+    }
+
+    @Override
+    public boolean mouseDragged(
+            Click click,
+            double offsetX,
+            double offsetY
+    ) {
+        if (draggingOverlay && click.button() == 0) {
+
+            BeeModConfig config = BeeModConfig.get();
+
+            int newX = config.getBuffOverlayX() + (int) offsetX;
+            int newY = config.getBuffOverlayY() + (int) offsetY;
+
+            newX = Math.max(
+                    0,
+                    Math.min(
+                            newX,
+                            this.width - PREVIEW_WIDTH
+                    )
+            );
+
+            newY = Math.max(
+                    0,
+                    Math.min(
+                            newY,
+                            this.height - PREVIEW_HEIGHT
+                    )
+            );
+
+            config.setBuffOverlayX(newX);
+            config.setBuffOverlayY(newY);
+
+            return true;
+        }
+
+        return super.mouseDragged(click, offsetX, offsetY);
+    }
+
+    @Override
+    public boolean mouseReleased(Click click) {
+
+        if (click.button() == 0 && draggingOverlay) {
+
+            draggingOverlay = false;
+
+            BeeModConfig.save();
+
+            return true;
+        }
+
+        return super.mouseReleased(click);
     }
 
     @Override

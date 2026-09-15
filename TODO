@@ -1,3 +1,6 @@
 > Adding timer until totem/lapis bee despawns
+- Refresh timer on [player] found lapis/totem
+- Remove lapis/totem when fed/killed
+
 > Adding butterfly helper
-> Adding overlay position config
+- showing hitbox

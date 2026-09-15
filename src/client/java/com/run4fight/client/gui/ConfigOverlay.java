@@ -1,5 +1,6 @@
 package com.run4fight.client.gui;
 
+import com.run4fight.client.BeeModClient;
 import com.run4fight.client.gui.configgui.BuffOverlayConfigScreen;
 import com.run4fight.client.gui.configgui.WealthClockOverlayConfigScreen;
 import net.minecraft.client.gui.DrawContext;
@@ -11,6 +12,8 @@ public class ConfigOverlay extends Screen {
 
     private static final int PANEL_WIDTH = 400;
     private static final int PANEL_HEIGHT = 180;
+
+
 
     public ConfigOverlay() {
         super(Text.literal("BeeMod Config"));
@@ -28,7 +31,12 @@ public class ConfigOverlay extends Screen {
                 ButtonWidget.builder(
                         Text.literal("Config"),
                         button -> {
-                            this.client.setScreen(new BuffOverlayConfigScreen(this));
+                            this.client.setScreen(
+                                    new BuffOverlayConfigScreen(
+                                            this,
+                                            BeeModClient.getBuffOverlay()
+                                    )
+                            );
                         }
                 ).dimensions(
                         left + 270,

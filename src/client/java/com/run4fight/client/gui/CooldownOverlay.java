@@ -26,7 +26,15 @@ public class CooldownOverlay implements HudOverlay {
     public void render(DrawContext context, RenderTickCounter tickCounter) {
         if (!BeeModConfig.get().isShowCooldown()) return;
 
-        int y = 3;
+        BeeModConfig config = BeeModConfig.get();
+
+        if (!config.isShowCooldown()) {
+            return;
+        }
+
+        int x = config.getWealthClockOverlayX();
+        int y = config.getWealthClockOverlayY();
+
         for (CooldownModel cd : triggerHandler.getRegistry().getActiveCooldowns()) {
             long remaining = cd.getRemainingMs();
             int h = (int) (remaining / 3_600_000L);
@@ -36,7 +44,7 @@ public class CooldownOverlay implements HudOverlay {
             context.drawTextWithShadow(
                     MinecraftClient.getInstance().textRenderer,
                     String.format("⏳ %02d:%02d:%02d", h, m, s),
-                    10, y, 0xFFFF5555
+                    x, y, 0xFFFF5555
             );
             y += 5;
         }

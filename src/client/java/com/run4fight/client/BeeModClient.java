@@ -14,19 +14,21 @@ import net.fabricmc.loader.api.FabricLoader;
 
 public class BeeModClient implements ClientModInitializer {
 	private static BuffManager buffManager;
+	private static BuffOverlay buffOverlay;
+	private static TriggerHandler triggerHandler;
 
 	@Override
 	public void onInitializeClient() {
 		buffManager = new BuffManager();
 
 		ActionBarHandler actionBarHandler = new ActionBarHandler(buffManager);
-		BuffOverlay buffOverlay = new BuffOverlay(buffManager);
+		buffOverlay = new BuffOverlay(buffManager);
 
 		CommandHandler commandHandler = new CommandHandler(actionBarHandler);
 		commandHandler.register();
 
 		CooldownData.init(FabricLoader.getInstance().getConfigDir());
-		TriggerHandler triggerHandler = new TriggerHandler();
+		triggerHandler = new TriggerHandler();
 		triggerHandler.register();
 
 		CooldownOverlay cooldownOverlay = new CooldownOverlay(triggerHandler);
@@ -40,5 +42,11 @@ public class BeeModClient implements ClientModInitializer {
 
 	public static BuffManager getBuffManager() {
 		return buffManager;
+	}
+	public static BuffOverlay getBuffOverlay() {
+		return buffOverlay;
+	}
+	public static TriggerHandler getTriggerHandler() {
+		return triggerHandler;
 	}
 }
