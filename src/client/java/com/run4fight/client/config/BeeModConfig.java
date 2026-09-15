@@ -24,21 +24,22 @@ public class BeeModConfig {
 
     private boolean showOverlay = true;
     private boolean showActionbar = true;
-
-    public boolean isShowOverlay() {
-        return showOverlay;
-    }
+    private boolean showCooldown = true;
 
     public boolean isShowActionbar() {
         return showActionbar;
     }
-
-    public void setShowOverlay(boolean showOverlay) {
-        this.showOverlay = showOverlay;
+    public boolean isShowCooldown() { return showCooldown; }
+    public boolean isShowOverlay() {
+        return showOverlay;
     }
 
     public void setShowActionbar(boolean showActionbar) {
         this.showActionbar = showActionbar;
+    }
+    public void setShowCooldown(boolean v) { this.showCooldown = v; }
+    public void setShowOverlay(boolean showOverlay) {
+        this.showOverlay = showOverlay;
     }
 
     public static BeeModConfig get() {

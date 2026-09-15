@@ -1,5 +1,6 @@
 package com.run4fight.client.gui;
 
+import com.run4fight.client.core.handlers.HudOverlay;
 import com.run4fight.client.core.managers.BuffManager;
 import com.run4fight.client.model.BuffModel;
 import com.run4fight.client.model.EffectModel;
@@ -8,16 +9,13 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import com.run4fight.client.config.BeeModConfig;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BuffOverlay {
+public class BuffOverlay implements HudOverlay {
 
-    public static final Identifier ID =
-            Identifier.of("beemod", "buff_overlay");
-
+    public static final Identifier ID = Identifier.of("beemod", "buff_overlay");
     private final BuffManager buffManager;
 
     private static final int ICON_SIZE = 24;
@@ -28,6 +26,10 @@ public class BuffOverlay {
         this.buffManager = buffManager;
     }
 
+    @Override
+    public Identifier getId() {return ID;}
+
+    @Override
     public void render(DrawContext context, RenderTickCounter tickCounter) {
 
         MinecraftClient client = MinecraftClient.getInstance();

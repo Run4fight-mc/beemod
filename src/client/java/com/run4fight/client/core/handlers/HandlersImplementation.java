@@ -13,11 +13,11 @@ public class HandlersImplementation {
         );
     }
 
-    public static void registerOverlay(BuffOverlay buffOverlay) {
+    public static void registerOverlay(HudOverlay overlay) {
         HudElementRegistry.attachElementAfter(
                 VanillaHudElements.CHAT,
-                BuffOverlay.ID,
-                buffOverlay::render
+                overlay.getId(),
+                overlay::render
         );
     }
 }

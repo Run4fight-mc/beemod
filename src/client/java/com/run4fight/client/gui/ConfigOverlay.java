@@ -1,6 +1,7 @@
 package com.run4fight.client.gui;
 
 import com.run4fight.client.gui.configgui.BuffOverlayConfigScreen;
+import com.run4fight.client.gui.configgui.WealthClockOverlayConfigScreen;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -32,8 +33,23 @@ public class ConfigOverlay extends Screen {
                 ).dimensions(
                         left + 270,
                         top + 75,
-                        100,
-                        20
+                        80,
+                        15
+                ).build()
+        );
+
+        // Buff Overlay - Config button
+        this.addDrawableChild(
+                ButtonWidget.builder(
+                        Text.literal("Config"),
+                        button -> {
+                            this.client.setScreen(new WealthClockOverlayConfigScreen(this));
+                        }
+                ).dimensions(
+                        left + 270,
+                        top + 105,
+                        80,
+                        15
                 ).build()
         );
     }
@@ -98,6 +114,14 @@ public class ConfigOverlay extends Screen {
                 Text.literal("Buff overlay"),
                 left + 30,
                 top + 80,
+                0xFFFFFFFF
+        );
+
+        context.drawTextWithShadow(
+                this.textRenderer,
+                Text.literal("Wealth Clock overlay"),
+                left + 30,
+                top + 110,
                 0xFFFFFFFF
         );
 
