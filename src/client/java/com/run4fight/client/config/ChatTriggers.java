@@ -38,7 +38,7 @@ public enum ChatTriggers {
     TOTEM_BEE_DESPAWN(
             "totem_bee_despawn",
             "\\[!] A totem has spawned\\.\\.\\.",
-            "[!] A totem bee was found by "+RegexData.PLAYER_NAME.getRegex(),
+            "\\[!] A totem bee was found by "+RegexData.PLAYER_NAME.getRegex(),
             "\\[!] \\+\\d bee totem \\(from totem bee\\)",
             300_000L
     ),
