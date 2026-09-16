@@ -101,9 +101,9 @@ public class TriggerHandler {
 
         if (client.player != null) {
             client.player.playSound(
-                    SoundEvents.BLOCK_BELL_USE,
-                    4.0f,
-                    0.5f
+                    SoundEvents.EVENT_MOB_EFFECT_RAID_OMEN,
+                    1.0f,
+                    1f
             );
         }
     }
