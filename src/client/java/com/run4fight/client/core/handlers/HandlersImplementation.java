@@ -1,23 +1,12 @@
 package com.run4fight.client.core.handlers;
 
-import com.run4fight.client.gui.BuffOverlay;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 
 public class HandlersImplementation {
 
     public static void register(ActionBarHandler actionBarHandler) {
         ClientTickEvents.END_CLIENT_TICK.register(
                 actionBarHandler::onTick
-        );
-    }
-
-    public static void registerOverlay(HudOverlay overlay) {
-        HudElementRegistry.attachElementAfter(
-                VanillaHudElements.CHAT,
-                overlay.getId(),
-                overlay::render
         );
     }
 }

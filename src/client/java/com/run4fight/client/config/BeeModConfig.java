@@ -9,6 +9,8 @@ import java.io.Reader;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 
 public class BeeModConfig {
 
@@ -22,32 +24,43 @@ public class BeeModConfig {
 
     private static BeeModConfig INSTANCE;
 
-    private boolean showOverlay = true;
+    // Not positional and read outside any overlay (InGameHudMixin),
+    // so it stays a global flag rather than overlay settings.
     private boolean showActionbar = true;
-    private boolean showCooldown = true;
 
-    // Buff overlay
-    private int buffOverlayX = 10;
-    private int buffOverlayY = 10;
+    /** Per-overlay settings, keyed by overlay key. */
+    private Map<String, OverlaySettings> overlays = new HashMap<>();
 
-    // Clock cooldown overlay
-    private int wealthClockOverlayX = 10;
-    private int wealthClockOverlayY = 3;
+    // Pre-overlays-map layout, boxed so Gson leaves them null when
+    // absent. Folded into `overlays` by migrateLegacy() on load, then
+    // dropped from the file. Remove once no old config is in the wild.
+    private Integer buffOverlayX;
+    private Integer buffOverlayY;
+    private Integer wealthClockOverlayX;
+    private Integer wealthClockOverlayY;
+    private Boolean showOverlay;
+    private Boolean showCooldown;
 
     public boolean isShowActionbar() {
         return showActionbar;
-    }
-    public boolean isShowCooldown() { return showCooldown; }
-    public boolean isShowOverlay() {
-        return showOverlay;
     }
 
     public void setShowActionbar(boolean showActionbar) {
         this.showActionbar = showActionbar;
     }
-    public void setShowCooldown(boolean v) { this.showCooldown = v; }
-    public void setShowOverlay(boolean showOverlay) {
-        this.showOverlay = showOverlay;
+
+    /**
+     * Settings for {@code key}, created from the given defaults on first use.
+     */
+    public OverlaySettings overlay(String key, int defaultX, int defaultY) {
+        if (overlays == null) {
+            overlays = new HashMap<>();
+        }
+
+        return overlays.computeIfAbsent(
+                key,
+                ignored -> new OverlaySettings(defaultX, defaultY)
+        );
     }
 
     public static BeeModConfig get() {
@@ -78,6 +91,10 @@ public class BeeModConfig {
 
             INSTANCE = new BeeModConfig();
         }
+
+        if (INSTANCE.migrateLegacy()) {
+            save();
+        }
     }
 
     public static void save() {
@@ -98,36 +115,67 @@ public class BeeModConfig {
         }
     }
 
+    /**
+     * Moves values written by the pre-overlays-map layout into
+     * {@link #overlays} so saved positions and toggles survive the update.
+     *
+     * <p>Keys are literals on purpose - config must not depend on gui.
+     *
+     * @return true if anything was migrated and the file should be rewritten
+     */
+    private boolean migrateLegacy() {
+        boolean migrated = migrateInto(
+                "buff",
+                buffOverlayX,
+                buffOverlayY,
+                showOverlay
+        );
 
-    public int getBuffOverlayX() {
-        return buffOverlayX;
+        buffOverlayX = null;
+        buffOverlayY = null;
+        showOverlay = null;
+
+        migrated |= migrateInto(
+                "cooldown",
+                wealthClockOverlayX,
+                wealthClockOverlayY,
+                showCooldown
+        );
+
+        wealthClockOverlayX = null;
+        wealthClockOverlayY = null;
+        showCooldown = null;
+
+        return migrated;
     }
 
-    public void setBuffOverlayX(int buffOverlayX) {
-        this.buffOverlayX = buffOverlayX;
-    }
+    /** No-op (and creates no entry) when there is nothing to migrate. */
+    private boolean migrateInto(
+            String key,
+            Integer x,
+            Integer y,
+            Boolean enabled
+    ) {
+        if (x == null && y == null && enabled == null) {
+            return false;
+        }
 
-    public int getBuffOverlayY() {
-        return buffOverlayY;
-    }
+        // Defaults are irrelevant here - every field is about to be
+        // overwritten by the legacy value or left at the class default.
+        OverlaySettings settings = overlay(key, 10, 10);
 
-    public void setBuffOverlayY(int buffOverlayY) {
-        this.buffOverlayY = buffOverlayY;
-    }
+        if (x != null) {
+            settings.setX(x);
+        }
 
-    public int getWealthClockOverlayX() {
-        return wealthClockOverlayX;
-    }
+        if (y != null) {
+            settings.setY(y);
+        }
 
-    public int getWealthClockOverlayY() {
-        return wealthClockOverlayY;
-    }
+        if (enabled != null) {
+            settings.setEnabled(enabled);
+        }
 
-    public void setWealthClockOverlayX(int x) {
-        this.wealthClockOverlayX = x;
-    }
-
-    public void setWealthClockOverlayY(int y) {
-        this.wealthClockOverlayY = y;
+        return true;
     }
 }

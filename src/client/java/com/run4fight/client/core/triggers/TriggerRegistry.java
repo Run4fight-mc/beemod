@@ -9,6 +9,13 @@ public class TriggerRegistry {
 
     public void add(MessageTrigger trigger) { triggers.add(trigger); }
 
+    /** Every registered cooldown, active or not - used to build config options. */
+    public List<CooldownModel> getAll() {
+        return triggers.stream()
+                .map(MessageTrigger::getModel)
+                .toList();
+    }
+
     public List<CooldownModel> getActiveCooldowns() {
         return triggers.stream()
                 .map(MessageTrigger::getModel)

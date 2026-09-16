@@ -16,7 +16,20 @@ public class MessageTrigger {
 
     public void register() {
         ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
-            if (message.getString().equals(model.getTargetMessage())) {
+            String text = message.getString();
+
+            if (model.matchesBreak(text)) {
+                model.disable();
+                handler.onBroken(model);
+                return;
+            }
+
+            if (model.matchesComplete(text)) {
+                handler.onCompleted(model);
+                return;
+            }
+
+            if (model.matchesTrigger(text)) {
                 model.trigger();
                 handler.onTriggered(model);
             }

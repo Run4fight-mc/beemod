@@ -1,7 +1,7 @@
 package com.run4fight.client.core.handlers;
 
 import com.mojang.brigadier.context.CommandContext;
-import com.run4fight.client.gui.ConfigOverlay;
+import com.run4fight.client.gui.configgui.BeeModConfigScreen;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
@@ -58,7 +58,7 @@ public class CommandHandler {
         MinecraftClient client = MinecraftClient.getInstance();
 
         client.execute(() -> {
-            client.setScreen(new ConfigOverlay());
+            client.setScreen(new BeeModConfigScreen());
         });
 
         return 1;

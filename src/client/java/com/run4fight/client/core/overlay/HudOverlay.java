@@ -1,4 +1,4 @@
-package com.run4fight.client.core.handlers;
+package com.run4fight.client.core.overlay;
 
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
