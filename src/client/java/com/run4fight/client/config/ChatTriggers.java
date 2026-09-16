@@ -46,7 +46,7 @@ public enum ChatTriggers {
     LAPIS_BEE_DESPAWN(
             "lapis_bee_despawn",
             "\\[!] An (EPIC )?ore has spawned\\.\\.\\.",
-            "\\[!] A (GIFTED)? hungry lapis bee was found by "+RegexData.PLAYER_NAME.getRegex(),
+            "\\[!] A (GIFTED )?hungry lapis bee was found by "+RegexData.PLAYER_NAME.getRegex(),
             "\\[!] \\+1 (epic )?lapis \\(from (epic )?hungry lapis bee\\)",
             300_000L
     );

@@ -130,7 +130,7 @@ public class OverlayConfigScreen extends PanelScreen {
         super.render(context, mouseX, mouseY, delta);
 
         // Drawn last so the preview isn't hidden behind the panel.
-        overlay.renderPreview(context, this.textRenderer);
+        overlay.renderPreview(context, this.textRenderer, mouseX, mouseY);
     }
 
     private OverlayBounds previewBounds() {

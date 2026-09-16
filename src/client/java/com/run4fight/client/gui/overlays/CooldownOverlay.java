@@ -48,7 +48,9 @@ public class CooldownOverlay extends Overlay {
             TextRenderer textRenderer,
             int x,
             int y,
-            boolean preview
+            boolean preview,
+            double mouseX,
+            double mouseY
     ) {
         List<CooldownModel> visible = visibleCooldowns();
 

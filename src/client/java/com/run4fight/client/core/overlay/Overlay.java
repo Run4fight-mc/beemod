@@ -69,7 +69,9 @@ public abstract class Overlay implements HudOverlay {
             TextRenderer textRenderer,
             int x,
             int y,
-            boolean preview
+            boolean preview,
+            double mouseX,
+            double mouseY
     );
 
     /** Size of what {@link #draw} would paint, for hit-testing and clamping. */
@@ -105,19 +107,31 @@ public abstract class Overlay implements HudOverlay {
             return;
         }
 
+        double mouseX = client.mouse.getX()
+                * client.getWindow().getScaledWidth()
+                / client.getWindow().getWidth();
+
+        double mouseY = client.mouse.getY()
+                * client.getWindow().getScaledHeight()
+                / client.getWindow().getHeight();
+
         draw(
                 context,
                 client.textRenderer,
                 settings.getX(),
                 settings.getY(),
-                false
+                false,
+                mouseX,
+                mouseY
         );
     }
 
     /** Draws the overlay at its configured position, ignoring the enable flag. */
     public final void renderPreview(
             DrawContext context,
-            TextRenderer textRenderer
+            TextRenderer textRenderer,
+            double mouseX,
+            double mouseY
     ) {
         OverlaySettings settings = settings();
 
@@ -126,7 +140,9 @@ public abstract class Overlay implements HudOverlay {
                 textRenderer,
                 settings.getX(),
                 settings.getY(),
-                true
+                true,
+                mouseX,
+                mouseY
         );
     }
 }

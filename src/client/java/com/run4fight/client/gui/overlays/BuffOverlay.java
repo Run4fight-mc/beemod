@@ -6,10 +6,12 @@ import com.run4fight.client.core.overlay.Overlay;
 import com.run4fight.client.core.overlay.OverlayBounds;
 import com.run4fight.client.core.overlay.OverlayOption;
 import com.run4fight.client.model.BuffModel;
+import com.run4fight.client.model.EffectModel;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BuffOverlay extends Overlay {
@@ -47,7 +49,9 @@ public class BuffOverlay extends Overlay {
             TextRenderer textRenderer,
             int x,
             int y,
-            boolean preview
+            boolean preview,
+            double mouseX,
+            double mouseY
     ) {
         List<BuffModel> buffs = buffManager.getBuffs();
 
@@ -60,6 +64,9 @@ public class BuffOverlay extends Overlay {
         }
 
         for (BuffModel buff : buffs) {
+
+            int buffX = x;
+            int buffY = y;
 
             // Buff icon
             context.drawText(
@@ -90,6 +97,41 @@ public class BuffOverlay extends Overlay {
             );
 
             context.getMatrices().popMatrix();
+
+            // Mouse over this buff
+            if (!preview
+                    && mouseX >= buffX
+                    && mouseX < buffX + ICON_SIZE
+                    && mouseY >= buffY
+                    && mouseY < buffY + ICON_SIZE) {
+
+                List<Text> tooltip = new ArrayList<>();
+
+                tooltip.add(
+                        Text.literal(
+                                buff.getName()
+                                        + " (" + buff.getDuration() + ")"
+                        )
+                );
+
+                for (EffectModel effect : buff.getEffects()) {
+                    tooltip.add(
+                            Text.literal(
+                                    "- "
+                                            + effect.getValue()
+                                            + " "
+                                            + effect.getEffectName()
+                            )
+                    );
+                }
+
+                context.drawTooltip(
+                        textRenderer,
+                        tooltip,
+                        (int) mouseX,
+                        (int) mouseY
+                );
+            }
 
             x += ICON_SIZE;
         }
