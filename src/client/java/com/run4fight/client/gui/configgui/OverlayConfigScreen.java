@@ -6,12 +6,15 @@ import com.run4fight.client.core.overlay.Overlay;
 import com.run4fight.client.core.overlay.OverlayBounds;
 import com.run4fight.client.core.overlay.OverlayOption;
 import com.run4fight.client.gui.PanelScreen;
+import com.run4fight.client.model.CooldownModel;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
-
+import com.run4fight.client.config.ChatTriggers;
+import com.run4fight.client.gui.overlays.CooldownOverlay;
+import com.run4fight.client.config.CooldownConfigScreen;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,7 +63,18 @@ public class OverlayConfigScreen extends PanelScreen {
         super.init();
 
         for (int slot = 0; slot < visibleRowCount(); slot++) {
-            addToggleButton(rows.get(slot + scrollOffset()), slot);
+            int index = slot + scrollOffset();
+
+            if (overlay instanceof CooldownOverlay cooldownOverlay) {
+                addCooldownButtons(
+                        rows.get(index),
+                        cooldownOverlay,
+                        index,
+                        slot
+                );
+            } else {
+                addToggleButton(rows.get(index), slot);
+            }
         }
 
         this.addDrawableChild(
@@ -93,6 +107,62 @@ public class OverlayConfigScreen extends PanelScreen {
                         rowButtonX(ROW_BUTTON_WIDTH),
                         rowY(slot),
                         ROW_BUTTON_WIDTH,
+                        ROW_BUTTON_HEIGHT
+                ).build()
+        );
+    }
+
+    private void addCooldownButtons(
+            OverlayOption option,
+            CooldownOverlay cooldownOverlay,
+            int index,
+            int slot
+    ) {
+        int configureWidth = 85;
+        int toggleWidth = 85;
+        int gap = 10;
+
+        int configureX = rowButtonX(configureWidth);
+        int toggleX = configureX - gap - toggleWidth;
+
+        this.addDrawableChild(
+                ButtonWidget.builder(
+                        Text.literal(option.value() ? "ON" : "OFF"),
+                        button -> {
+                            option.toggle();
+
+                            button.setMessage(
+                                    Text.literal(option.value() ? "ON" : "OFF")
+                            );
+
+                            BeeModConfig.save();
+                        }
+                ).dimensions(
+                        toggleX,
+                        rowY(slot),
+                        toggleWidth,
+                        ROW_BUTTON_HEIGHT
+                ).build()
+        );
+
+        this.addDrawableChild(
+                ButtonWidget.builder(
+                        Text.literal("Configure"),
+                        button -> {
+                            ChatTriggers trigger =
+                                    cooldownOverlay.getTrigger(index - 1);
+
+                            this.client.setScreen(
+                                    new CooldownConfigScreen(
+                                            this,
+                                            trigger
+                                    )
+                            );
+                        }
+                ).dimensions(
+                        configureX,
+                        rowY(slot),
+                        configureWidth,
                         ROW_BUTTON_HEIGHT
                 ).build()
         );

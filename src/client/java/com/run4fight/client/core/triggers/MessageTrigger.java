@@ -18,6 +18,10 @@ public class MessageTrigger {
         ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
             String text = message.getString();
 
+            if (!handler.isEnabled(model.getId())) {
+                return;
+            }
+
             if (model.matchesBreak(text)) {
                 model.disable();
                 handler.onBroken(model);
@@ -30,11 +34,14 @@ public class MessageTrigger {
             }
 
             if (model.matchesTrigger(text)) {
-                model.trigger();
-                handler.onTriggered(model);
+                if (model.trigger()) {
+                    handler.onTriggered(model);
+                }
             }
         });
     }
 
-    public CooldownModel getModel() { return model; }
+    public CooldownModel getModel() {
+        return model;
+    }
 }

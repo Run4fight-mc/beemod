@@ -31,6 +31,9 @@ public class BeeModConfig {
     /** Per-overlay settings, keyed by overlay key. */
     private Map<String, OverlaySettings> overlays = new HashMap<>();
 
+    /** Per-chat-trigger settings */
+    private Map<String, ChatTriggerSettings> chatTriggers = new HashMap<>();
+
     // Pre-overlays-map layout, boxed so Gson leaves them null when
     // absent. Folded into `overlays` by migrateLegacy() on load, then
     // dropped from the file. Remove once no old config is in the wild.
@@ -69,6 +72,21 @@ public class BeeModConfig {
         }
 
         return INSTANCE;
+    }
+
+    public ChatTriggerSettings chatTrigger(ChatTriggers trigger) {
+        if (chatTriggers == null) {
+            chatTriggers = new HashMap<>();
+        }
+
+        return chatTriggers.computeIfAbsent(
+                trigger.getCooldownName(),
+                ignored -> new ChatTriggerSettings(
+                        true,
+                        trigger.isDefaultSoundOnStart(),
+                        trigger.isDefaultSoundOnEnd()
+                )
+        );
     }
 
     public static void load() {

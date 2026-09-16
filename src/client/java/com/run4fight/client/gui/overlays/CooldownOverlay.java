@@ -7,8 +7,12 @@ import com.run4fight.client.core.overlay.OverlayOption;
 import com.run4fight.client.model.CooldownModel;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
-
+import com.run4fight.client.config.BeeModConfig;
+import com.run4fight.client.config.ChatTriggers;
 import java.util.List;
+import com.run4fight.client.config.BeeModConfig;
+import com.run4fight.client.config.ChatTriggers;
+import com.run4fight.client.config.ChatTriggerSettings;
 
 public class CooldownOverlay extends Overlay {
 
@@ -32,13 +36,26 @@ public class CooldownOverlay extends Overlay {
      */
     @Override
     public List<OverlayOption> getOptions() {
-        return triggerHandler.getRegistry().getAll().stream()
-                .map(cooldown -> OverlayOption.of(
-                        settings(),
-                        cooldown.getId(),
-                        displayNameOf(cooldown),
-                        true
-                ))
+        List<CooldownModel> cooldowns =
+                triggerHandler.getRegistry().getAll();
+
+        ChatTriggers[] triggers = ChatTriggers.values();
+
+        return java.util.stream.IntStream.range(0, cooldowns.size())
+                .mapToObj(index -> {
+                    CooldownModel cooldown = cooldowns.get(index);
+                    ChatTriggers trigger = triggers[index];
+
+                    return new OverlayOption(
+                            displayNameOf(cooldown),
+                            () -> BeeModConfig.get()
+                                    .chatTrigger(trigger)
+                                    .isEnabled(),
+                            value -> BeeModConfig.get()
+                                    .chatTrigger(trigger)
+                                    .setEnabled(value)
+                    );
+                })
                 .toList();
     }
 
@@ -117,8 +134,18 @@ public class CooldownOverlay extends Overlay {
     /** Active cooldowns the player hasn't hidden. */
     private List<CooldownModel> visibleCooldowns() {
         return triggerHandler.getRegistry().getActiveCooldowns().stream()
-                .filter(cooldown -> settings().isToggled(cooldown.getId(), true))
+                .filter(cooldown -> isCooldownEnabled(cooldown))
                 .toList();
+    }
+
+    private boolean isCooldownEnabled(CooldownModel cooldown) {
+        ChatTriggers trigger = ChatTriggers.valueOf(
+                cooldown.getId().toUpperCase()
+        );
+
+        return BeeModConfig.get()
+                .chatTrigger(trigger)
+                .isEnabled();
     }
 
     private static int lineHeight(TextRenderer textRenderer) {
@@ -161,5 +188,9 @@ public class CooldownOverlay extends Overlay {
         }
 
         return name.toString();
+    }
+
+    public ChatTriggers getTrigger(int index) {
+        return ChatTriggers.values()[index];
     }
 }

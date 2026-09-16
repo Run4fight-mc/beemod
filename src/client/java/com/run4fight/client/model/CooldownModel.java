@@ -28,15 +28,17 @@ public class CooldownModel {
         this.durationMs = durationMs;
     }
 
-    public void trigger() {
+    public boolean trigger() {
         long now = System.currentTimeMillis();
 
         if (now - lastTrigger < MIN_TRIGGER_INTERVAL) {
-            return;
+            return false;
         }
 
         lastTrigger = now;
         this.endMs = now + durationMs;
+
+        return true;
     }
 
     public void disable() {
