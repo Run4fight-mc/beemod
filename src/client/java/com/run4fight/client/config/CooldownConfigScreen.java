@@ -1,5 +1,6 @@
 package com.run4fight.client.config;
 
+import com.run4fight.client.core.overlay.OverlayOption;
 import com.run4fight.client.gui.PanelScreen;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -37,6 +38,7 @@ public class CooldownConfigScreen extends PanelScreen {
         addToggleButton(
                 "Sound on start",
                 settings.isSoundOnStart(),
+                settings::isSoundOnStart,
                 settings::setSoundOnStart,
                 0
         );
@@ -44,6 +46,7 @@ public class CooldownConfigScreen extends PanelScreen {
         addToggleButton(
                 "Sound on end",
                 settings.isSoundOnEnd(),
+                settings::isSoundOnEnd,
                 settings::setSoundOnEnd,
                 1
         );
@@ -64,6 +67,7 @@ public class CooldownConfigScreen extends PanelScreen {
     private void addToggleButton(
             String label,
             boolean value,
+            java.util.function.BooleanSupplier getter,
             java.util.function.Consumer<Boolean> setter,
             int slot
     ) {
@@ -71,7 +75,7 @@ public class CooldownConfigScreen extends PanelScreen {
                 ButtonWidget.builder(
                         toggleText(label, value),
                         button -> {
-                            boolean newValue = !value;
+                            boolean newValue = !getter.getAsBoolean();
 
                             setter.accept(newValue);
 
@@ -89,7 +93,6 @@ public class CooldownConfigScreen extends PanelScreen {
                 ).build()
         );
     }
-
     @Override
     public void render(
             DrawContext context,
