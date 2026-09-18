@@ -35,7 +35,7 @@ public enum ChatTriggers {
 
     MOUNTAIN_TOP_BOOST(
             "mountain_top_boost",
-            "\\[ⓘ] Boosted "+RegexData.WHITE_FIELD.getRegex()+" field",
+            "\\[ⓘ] Boosted "+RegexData.WHITE_FIELD.getRegex()+" (field|patch)",
             "",
             "",
             3_600_000L,

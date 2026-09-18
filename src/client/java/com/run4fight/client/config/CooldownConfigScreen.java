@@ -1,6 +1,5 @@
 package com.run4fight.client.config;
 
-import com.run4fight.client.core.overlay.OverlayOption;
 import com.run4fight.client.gui.PanelScreen;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -25,7 +24,7 @@ public class CooldownConfigScreen extends PanelScreen {
 
     @Override
     protected int rowCount() {
-        return 2;
+        return 3;
     }
 
     @Override
@@ -50,6 +49,8 @@ public class CooldownConfigScreen extends PanelScreen {
                 settings::setSoundOnEnd,
                 1
         );
+
+        addSoundButton(settings, 2);
 
         this.addDrawableChild(
                 ButtonWidget.builder(
@@ -93,6 +94,50 @@ public class CooldownConfigScreen extends PanelScreen {
                 ).build()
         );
     }
+
+    private void addSoundButton(
+            ChatTriggerSettings settings,
+            int slot
+    ) {
+        this.addDrawableChild(
+                ButtonWidget.builder(
+                        Text.literal(
+                                "Sound: "
+                                        + settings.getSound().getDisplayName()
+                        ),
+                        button -> {
+                            AlertSound[] sounds = AlertSound.values();
+
+                            int currentIndex =
+                                    settings.getSound().ordinal();
+
+                            int nextIndex =
+                                    (currentIndex + 1) % sounds.length;
+
+                            AlertSound newSound = sounds[nextIndex];
+
+                            settings.setSound(newSound);
+
+                            BeeModConfig.save();
+
+                            button.setMessage(
+                                    Text.literal(
+                                            "Sound: "
+                                                    + newSound.getDisplayName()
+                                    )
+                            );
+
+                            newSound.play();
+                        }
+                ).dimensions(
+                        rowButtonX(ROW_BUTTON_WIDTH),
+                        rowY(slot),
+                        ROW_BUTTON_WIDTH,
+                        ROW_BUTTON_HEIGHT
+                ).build()
+        );
+    }
+
     @Override
     public void render(
             DrawContext context,
@@ -117,6 +162,14 @@ public class CooldownConfigScreen extends PanelScreen {
                 Text.literal("Sound on end"),
                 labelX,
                 rowY(1) + 6,
+                TEXT_COLOR
+        );
+
+        context.drawTextWithShadow(
+                this.textRenderer,
+                Text.literal("Alert sound"),
+                labelX,
+                rowY(2) + 6,
                 TEXT_COLOR
         );
 

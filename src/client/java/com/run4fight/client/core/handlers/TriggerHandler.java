@@ -7,8 +7,6 @@ import com.run4fight.client.core.triggers.CooldownData;
 import com.run4fight.client.core.triggers.MessageTrigger;
 import com.run4fight.client.core.triggers.TriggerRegistry;
 import com.run4fight.client.model.CooldownModel;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.sound.SoundEvents;
 
 import java.util.regex.Pattern;
 
@@ -64,7 +62,7 @@ public class TriggerHandler {
         ChatTriggerSettings settings = getSettings(model.getId());
 
         if (settings.isSoundOnEnd()) {
-            playBell();
+            playSound(settings);
         }
     }
 
@@ -72,7 +70,7 @@ public class TriggerHandler {
         ChatTriggerSettings settings = getSettings(model.getId());
 
         if (settings.isSoundOnStart()) {
-            playBell();
+            playSound(settings);
         }
 
         CooldownData.save(model);
@@ -96,15 +94,15 @@ public class TriggerHandler {
         return registry;
     }
 
-    private void playBell() {
-        MinecraftClient client = MinecraftClient.getInstance();
+    private void playSound(ChatTriggerSettings settings) {
+        settings.getSound().play();
+    }
 
-        if (client.player != null) {
-            client.player.playSound(
-                    SoundEvents.EVENT_MOB_EFFECT_RAID_OMEN,
-                    1.0f,
-                    1f
-            );
+    public void tick() {
+        for (CooldownModel model : registry.getAll()) {
+            if (model.expireIfNeeded()) {
+                onCompleted(model);
+            }
         }
     }
 }

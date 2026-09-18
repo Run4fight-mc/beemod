@@ -49,6 +49,15 @@ public class CooldownModel {
         this.endMs = endMs;
     }
 
+    public boolean expireIfNeeded() {
+        if (endMs > 0L && System.currentTimeMillis() >= endMs) {
+            endMs = 0L;
+            return true;
+        }
+
+        return false;
+    }
+
     public long getRemainingMs() {
         return Math.max(0, endMs - System.currentTimeMillis());
     }

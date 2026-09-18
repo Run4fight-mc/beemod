@@ -65,7 +65,9 @@ public class OverlayConfigScreen extends PanelScreen {
         for (int slot = 0; slot < visibleRowCount(); slot++) {
             int index = slot + scrollOffset();
 
-            if (overlay instanceof CooldownOverlay cooldownOverlay) {
+            if (index == 0) {
+                addToggleButton(rows.get(index), slot);
+            } else if (overlay instanceof CooldownOverlay cooldownOverlay) {
                 addCooldownButtons(
                         rows.get(index),
                         cooldownOverlay,
@@ -115,7 +117,7 @@ public class OverlayConfigScreen extends PanelScreen {
     private void addCooldownButtons(
             OverlayOption option,
             CooldownOverlay cooldownOverlay,
-            int index,
+            int rowIndex,
             int slot
     ) {
         int configureWidth = 85;
@@ -132,7 +134,9 @@ public class OverlayConfigScreen extends PanelScreen {
                             option.toggle();
 
                             button.setMessage(
-                                    Text.literal(option.value() ? "ON" : "OFF")
+                                    Text.literal(
+                                            option.value() ? "ON" : "OFF"
+                                    )
                             );
 
                             BeeModConfig.save();
@@ -150,7 +154,7 @@ public class OverlayConfigScreen extends PanelScreen {
                         Text.literal("Configure"),
                         button -> {
                             ChatTriggers trigger =
-                                    cooldownOverlay.getTrigger(index - 1);
+                                    cooldownOverlay.getTrigger(rowIndex - 1);
 
                             this.client.setScreen(
                                     new CooldownConfigScreen(

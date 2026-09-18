@@ -12,6 +12,7 @@ import com.run4fight.client.gui.overlays.CooldownOverlay;
 import net.fabricmc.api.ClientModInitializer;
 import com.run4fight.client.config.BeeModConfig;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
 public class BeeModClient implements ClientModInitializer {
 	private static BuffManager buffManager;
@@ -28,13 +29,13 @@ public class BeeModClient implements ClientModInitializer {
 		commandHandler.register();
 
 		CooldownData.init(FabricLoader.getInstance().getConfigDir());
+
 		TriggerHandler triggerHandler = new TriggerHandler();
 		triggerHandler.register();
+		ClientTickEvents.END_CLIENT_TICK.register(client -> triggerHandler.tick());
 
 		HandlersImplementation.register(actionBarHandler);
 
-		// Registering an overlay here is all it takes: it is attached to
-		// the HUD and shows up in /beemod config automatically.
 		OverlayRegistry.register(new BuffOverlay(buffManager));
 		OverlayRegistry.register(new CooldownOverlay(triggerHandler));
 	}
